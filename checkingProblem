@@ -1,0 +1,107 @@
+using System;
+using System.Data;
+using System.Dynamic;
+
+namespace TicTacToe
+{
+    class Program
+    {
+        static char[,] nums =
+{
+                {'1','2','3'},
+                {'4','5','6'},
+                {'7','8','9'}
+            };
+        //isGameover - vytvořit kontrolu pro konec hry
+        static bool isGameover = false;
+        static int player = 1;
+        static char entrie = '0';
+        static void Main(string[] args)
+        {
+            playGround();
+            
+            while (!isGameover)
+            {
+                Console.WriteLine("na rade je hrac {0}, vyber si pole",player);
+                //vytvořit kontrolu vstupních dat a obsazení pole - && taken(entrie) se nechova podle ocekavani
+                while(!char.TryParse(Console.ReadLine(),out entrie) && taken(entrie))
+                {
+                    if (taken(entrie))
+                        Console.WriteLine("pole je obsazené jiným hráčem");
+                    else
+                        Console.WriteLine("Vlož číslo mezi 1 a 9");
+                }
+
+                switch (entrie)
+                {
+                    case '1':
+                        nums[0, 0] = xOrO();
+                        break;
+                    case '2':
+                        nums[0, 1] = xOrO();
+                        break;
+                    case '3':
+                        nums[0, 2] = xOrO();
+                        break;
+                    case '4':
+                        nums[1, 0] = xOrO();
+                        break;
+                    case '5':
+                        nums[1, 1] = xOrO();
+                        break;
+                    case '6':
+                        nums[1, 2] = xOrO();
+                        break;
+                    case '7':
+                        nums[2, 0] = xOrO();
+                        break;
+                    case '8':
+                        nums[2, 1] = xOrO();
+                        break;
+                    case '9':
+                        nums[2, 2] = xOrO();
+                        break;
+                }
+                Console.Clear();
+                playGround();
+                if (player == 1)
+                    player = 2;
+                else
+                    player = 1;
+            }
+            Console.ReadKey();
+        }
+
+        public static void playGround()
+        {
+            Console.WriteLine("       |       |       ");
+            Console.WriteLine("   {0}   |   {1}   |   {2}   ",nums[0,0],nums[0,1],nums[0,2]);
+            Console.WriteLine("       |       |       ");
+            Console.WriteLine("-----------------------");
+            Console.WriteLine("       |       |       ");
+            Console.WriteLine("   {0}   |   {1}   |   {2}   ", nums[1, 0], nums[1, 1], nums[1, 2]);
+            Console.WriteLine("       |       |       ");
+            Console.WriteLine("-----------------------");
+            Console.WriteLine("       |       |       ");
+            Console.WriteLine("   {0}   |   {1}   |   {2}   ", nums[2, 0], nums[2, 1], nums[2, 2]);
+            Console.WriteLine("       |       |       ");
+        }
+        public static char xOrO()
+        {
+            if (player == 1)
+                return 'X';
+            else
+                return 'O';
+        }
+        public static bool taken(char entrie)
+        {
+            bool takenOrNot = false;
+            foreach (char c in nums)
+            {
+                if (c == entrie)
+                    takenOrNot = true;
+            }
+            return takenOrNot;
+        }
+    }
+}
