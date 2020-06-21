@@ -4,35 +4,37 @@ using System.Dynamic;
 
 namespace TicTacToe
 {
-    class Program
+      class Program
     {
         static char[,] nums =
-{
-                {'1','2','3'},
+            {
+                {'X','X','3'},
                 {'4','5','6'},
                 {'7','8','9'}
             };
         //isGameover - vytvořit kontrolu pro konec hry
-        static bool isGameover = false;
+        static bool exitGame = false;
+        static bool isGameOver = false;
         static int player = 1;
-        static char entrie = '0';
+        static char entry = '1';
+        static int numParseCheck = 0;
         static void Main(string[] args)
         {
             playGround();
             
-            while (!isGameover)
+            while (!exitGame)
             {
                 Console.WriteLine("na rade je hrac {0}, vyber si pole",player);
-                //vytvořit kontrolu vstupních dat a obsazení pole - && taken(entrie) se nechova podle ocekavani
-                while(!char.TryParse(Console.ReadLine(),out entrie) && taken(entrie))
+                //vytvořit kontrolu vstupních dat a obsazení pole
+                while(!char.TryParse(Console.ReadLine(),out entry) || taken(entry) || !int.TryParse(entry.ToString(), out numParseCheck) || entry=='0')
                 {
-                    if (taken(entrie))
-                        Console.WriteLine("pole je obsazené jiným hráčem");
+                    if (taken(entry))
+                        Console.WriteLine("pole je zabrané");
                     else
                         Console.WriteLine("Vlož číslo mezi 1 a 9");
                 }
 
-                switch (entrie)
+                switch (entry)
                 {
                     case '1':
                         nums[0, 0] = xOrO();
@@ -68,7 +70,30 @@ namespace TicTacToe
                     player = 2;
                 else
                     player = 1;
+
+                gameOverCheck();
+                if (isGameOver)
+                {
+                    Console.WriteLine("Chceš hrát znovu?");
+                    Console.WriteLine("Zmáčkni -y- pro ano nebo -n- pro ne: y / n");
+                    while(!char.TryParse(Console.ReadLine(), out entry) || (entry!='y'&& entry != 'n'))
+                    {
+                        Console.WriteLine("Zmáčkni -y- pro ano nebo -n- pro ne");
+                    }
+                    if (entry.Equals('y'))
+                    {
+                        newGame();
+                        Console.Clear();
+                        playGround();
+
+                    }
+                    else
+                        exitGame = true;
+
+                    
+                }
             }
+            Console.WriteLine("hru ukončíš stisknutím libovolné klávesy...");
             Console.ReadKey();
         }
 
@@ -93,15 +118,82 @@ namespace TicTacToe
             else
                 return 'O';
         }
-        public static bool taken(char entrie)
+        public static bool taken(char entry)
         {
             bool takenOrNot = false;
 
-            if ((entrie == '1') && (nums[0, 0] == 'X' || nums[0, 0] == 'O'))
+                if ((entry == '1') && (nums[0, 0] == 'X' || nums[0, 0] == 'O'))
+                takenOrNot = true;
+           else if((entry == '2') && (nums[0, 1] == 'X' || nums[0, 1] == 'O'))
+                takenOrNot = true;
+           else if((entry == '3') && (nums[0, 2] == 'X' || nums[0, 2] == 'O'))
+                takenOrNot = true;
+           else if((entry == '4') && (nums[1, 0] == 'X' || nums[1, 0] == 'O'))
+                takenOrNot = true;
+           else if((entry == '5') && (nums[1, 1] == 'X' || nums[1, 1] == 'O'))
+                takenOrNot = true;
+           else if((entry == '6') && (nums[1, 2] == 'X' || nums[1, 2] == 'O'))
+                takenOrNot = true;
+           else if((entry == '7') && (nums[2, 0] == 'X' || nums[2, 0] == 'O'))
+                takenOrNot = true;
+           else if((entry == '8') && (nums[2, 1] == 'X' || nums[2, 1] == 'O'))
+                takenOrNot = true;
+           else if((entry == '9') && (nums[2, 2] == 'X' || nums[2, 2] == 'O'))
                 takenOrNot = true;
 
-            
+
+
             return takenOrNot;
+        }
+
+        public static void gameOverCheck()
+        {       //row check
+            if ((nums[0, 0] == 'X' && nums[0, 1] == 'X' && nums[0, 2] == 'X') || 
+                (nums[1, 0] == 'X' && nums[1, 1] == 'X' && nums[1, 2] == 'X') ||
+                (nums[2, 0] == 'X' && nums[2, 1] == 'X' && nums[2, 2] == 'X') ||
+               //column check
+                (nums[0, 0] == 'X' && nums[1, 0] == 'X' && nums[2, 0] == 'X') ||
+                (nums[0, 1] == 'X' && nums[1, 1] == 'X' && nums[2, 1] == 'X') ||
+                (nums[0, 2] == 'X' && nums[1, 2] == 'X' && nums[2, 2] == 'X') ||
+                //cross check
+                (nums[0, 0] == 'X' && nums[1, 1] == 'X' && nums[2, 2] == 'X')||
+                (nums[2, 0] == 'X' && nums[1, 1] == 'X' && nums[0, 2] == 'X'))
+            {
+                Console.WriteLine("Player 1 WON");
+                isGameOver = true;
+            }
+
+        else if ((nums[0, 0] == 'O' && nums[0, 1] == 'O' && nums[0, 2] == 'O') ||
+                (nums[1, 0] == 'O' && nums[1, 1] == 'O' && nums[1, 2] == 'O') ||
+                (nums[2, 0] == 'O' && nums[2, 1] == 'O' && nums[2, 2] == 'O') ||
+                //column check
+                (nums[0, 0] == 'O' && nums[1, 0] == 'O' && nums[2, 0] == 'O') ||
+                (nums[0, 1] == 'O' && nums[1, 1] == 'O' && nums[2, 1] == 'O') ||
+                (nums[0, 2] == 'O' && nums[1, 2] == 'O' && nums[2, 2] == 'O') ||
+                //cross check
+                (nums[0, 0] == 'O' && nums[1, 1] == 'O' && nums[2, 2] == 'O') ||
+                (nums[2, 0] == 'O' && nums[1, 1] == 'O' && nums[0, 2] == 'O'))
+            {
+                Console.WriteLine("Player 2 WON");
+                isGameOver = true;
+            }
+
+        }
+        public static void newGame()
+        {
+            nums[0, 0] = '1';
+            nums[0, 1] = '2';
+            nums[0, 2] = '3';
+            nums[1, 0] = '4';
+            nums[1, 1] = '5';
+            nums[1, 2] = '6';
+            nums[2, 0] = '7';
+            nums[2, 1] = '8';
+            nums[2, 2] = '9';
+
+            player = 1;
+            isGameOver = false;
+
         }
     }
 }
