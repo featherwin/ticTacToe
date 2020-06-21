@@ -96,11 +96,11 @@ namespace TicTacToe
         public static bool taken(char entrie)
         {
             bool takenOrNot = false;
-            foreach (char c in nums)
-            {
-                if (c == entrie)
-                    takenOrNot = true;
-            }
+
+            if ((entrie == '1') && (nums[0, 0] == 'X' || nums[0, 0] == 'O'))
+                takenOrNot = true;
+
+            
             return takenOrNot;
         }
     }
